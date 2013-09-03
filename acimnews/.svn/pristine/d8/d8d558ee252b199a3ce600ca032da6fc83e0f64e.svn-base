@@ -1,0 +1,52 @@
+/*
+ * To change this template, choose Tools | Templates
+ * and open the template in the editor.
+ */
+package br.com.acimnews.negocios;
+
+import br.com.acimnews.entidades.Acontecimento;
+import br.com.acimnews.supers.SuperFacade;
+import java.util.List;
+import javax.persistence.EntityManager;
+import javax.persistence.PersistenceContext;
+import javax.persistence.Query;
+import org.springframework.stereotype.Repository;
+import org.springframework.transaction.annotation.Transactional;
+
+/**
+ *
+ * @author Felipe Marinzeck
+ */
+@Repository
+public class AcontecimentoFacade extends SuperFacade<Acontecimento> {
+
+    @PersistenceContext(unitName = "acimnewsPU")
+    private EntityManager em;
+
+    public AcontecimentoFacade() {
+        super(Acontecimento.class);
+    }
+
+    @Override
+    protected EntityManager getEntityManager() {
+        return em;
+    }
+
+    // TODO
+//    private ResultadoValidacao validarRegrasNegocio(Object obj, ResultadoValidacao resultado) {
+//        Acontecimento acontecimento = (Acontecimento) obj;
+//        if (acontecimento.getValidoAte().compareTo(acontecimento.getPublicadoEm()) < 0){
+//            resultado.addErro("Erro Validação.", "A data de publicação não pode ser anterior à data de validade");
+//        }
+//        return resultado;
+//    }
+    
+    @Transactional
+    @Override
+    public List<Acontecimento> listar() {
+        String hql = "from Acontecimento ac order by ac.publicadoEm desc";
+        Query q = getEntityManager().createQuery(hql);
+        
+        return q.getResultList();
+    }
+}

@@ -1,0 +1,90 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:an="http://java.sun.com/jsf/composite/components"
+      xmlns:f="http://java.sun.com/jsf/core">    
+    <ui:composition template="/resources/templates/template.xhtml">
+        <ui:define name="body">
+            <h:form id="Formulario">                
+                <p:panel>
+                    <f:facet name="header">
+                        <h:outputText value="Novo Usuário" rendered="#{usuarioControlador.operacao eq 'NOVO'}" />
+                        <h:outputText value="Editar Usuário #{usuarioControlador.selecionado}" rendered="#{usuarioControlador.operacao eq 'EDITAR'}" />
+                    </f:facet>
+                    <h:panelGrid columns="2">
+                        <h:outputLabel value="Código:"/>
+                        <p:inputText value="#{usuarioControlador.selecionado.id}"
+                                     disabled="true"
+                                     title="Este campo é preenchido automaticamente pelo sistema."/>
+
+                        <an:labelObrigatorio para="nome" value="Nome:"/>
+                        <p:inputText id="nome"
+                                     size="70"
+                                     value="#{usuarioControlador.selecionado.nome}"                                     
+                                     title="Digite o nome do usuário."/>
+
+                        <an:labelObrigatorio para="login" value="Login:"/>
+                        <p:inputText id="login"
+                                     size="20"
+                                     value="#{usuarioControlador.selecionado.login}"                                     
+                                     title="Digite o login do usuário."/>
+
+                        <an:labelObrigatorio para="senha" value="Senha:"/>
+                        <p:password id="senha"
+                                    title="Digite a senha do usuário."
+                                    value="#{usuarioControlador.selecionado.senha}"
+                                    promptLabel="Nível de Senha"
+                                    weakLabel="Nível Fraco"
+                                    goodLabel="Nível Bom"
+                                    strongLabel="Nível Excelente"
+                                    size="20"
+                                    feedback="true"/>
+
+                        <an:labelObrigatorio para="senhaConf" value="Confirmação Senha:"/>
+                        <p:password id="senhaConf" title="Confirme a senha do usuário."
+                                    value="#{usuarioControlador.selecionado.confirmacaoSenha}"
+                                    size="20"
+                                    feedback="false"/>
+
+                        <h:outputLabel for="privilegioUsuario" value="Privilégio:" />
+                        <p:selectOneMenu style="min-width: 129px!important;"
+                                         effect="fade"
+                                         effectDuration="1"
+                                         value="#{usuarioControlador.selecionado.privilegioUsuario}"
+                                         id="privilegioUsuario" >
+                            <f:selectItem itemLabel="Administrativo" itemValue="ROLE_ADMIN" />
+                            <f:selectItem itemLabel="Usuário" itemValue="ROLE_USER" />
+                        </p:selectOneMenu>
+                        
+                        <h:outputLabel for="ativo" value="Ativo?:" />                        
+                        <p:selectOneMenu style="min-width: 129px!important;"
+                                         effect="fade"
+                                         effectDuration="1"
+                                         value="#{usuarioControlador.selecionado.ativo}"                                         
+                                         id="ativo" >
+                            <f:selectItem itemLabel="Sim" itemValue="#{true}" />
+                            <f:selectItem itemLabel="Não" itemValue="#{false}" />
+                        </p:selectOneMenu>
+                    </h:panelGrid>
+                </p:panel>
+
+                <p:commandButton value="Salvar"
+                                 icon="ui-icon-tick"
+                                 styleClass="mtop10 mrig05"
+                                 actionListener="#{usuarioControlador.salvar()}"
+                                 update=":Formulario :rodape" />
+
+                <p:commandButton value="Cancelar"
+                                 icon="ui-icon-cross"
+                                 styleClass="mtop10 mrig05"                                 
+                                 actionListener="#{usuarioControlador.navegarEmbora()}"/>
+
+                <p:button value="Listar Usuários" icon="ui-icon-arrow-180" href='/usuario/listar/'/>
+            </h:form>    
+        </ui:define>
+    </ui:composition>
+</html>
+

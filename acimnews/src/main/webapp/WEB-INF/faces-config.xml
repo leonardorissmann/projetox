@@ -1,0 +1,33 @@
+<?xml version='1.0' encoding='UTF-8'?>
+
+<!-- =========== FULL CONFIGURATION FILE ================================== -->
+
+<faces-config version="2.0"
+              xmlns="http://java.sun.com/xml/ns/javaee" 
+              xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
+              xsi:schemaLocation="http://java.sun.com/xml/ns/javaee http://java.sun.com/xml/ns/javaee/web-facesconfig_2_0.xsd">
+    <application>
+        <el-resolver>org.springframework.web.jsf.el.SpringBeanFacesELResolver</el-resolver>
+        
+        <locale-config>
+            <default-locale>pt_BR</default-locale>
+            <supported-locale>pt_BR</supported-locale>
+        </locale-config>
+    </application>
+    
+    <lifecycle>
+        <phase-listener>br.com.acimnews.listeners.LogSistemaListener</phase-listener>
+    </lifecycle>
+    
+    <system-event-listener>
+        <system-event-listener-class>seuPackage.ViewScopeCallbackRegistrer</system-event-listener-class>
+        <system-event-class>javax.faces.event.PostConstructViewMapEvent</system-event-class>
+        <source-class>javax.faces.component.UIViewRoot</source-class>
+    </system-event-listener>
+ 
+    <system-event-listener>
+        <system-event-listener-class>seuPackage.ViewScopeCallbackRegistrer</system-event-listener-class>
+        <system-event-class>javax.faces.event.PreDestroyViewMapEvent</system-event-class>
+        <source-class>javax.faces.component.UIViewRoot</source-class>
+    </system-event-listener>
+</faces-config>

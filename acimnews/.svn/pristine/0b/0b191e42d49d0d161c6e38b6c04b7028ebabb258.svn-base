@@ -1,0 +1,134 @@
+/*
+ * To change this template, choose Tools | Templates
+ * and open the template in the editor.
+ */
+package br.com.acimnews.entidades;
+
+import br.com.acimnews.supers.SuperEntidade;
+import br.com.acimnews.util.anotacoes.Cadastravel;
+import br.com.acimnews.util.anotacoes.Etiqueta;
+import java.io.Serializable;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+import javax.persistence.*;
+import org.hibernate.envers.Audited;
+
+/**
+ *
+ * @author Felipe Marinzeck
+ */
+@Entity
+@Audited
+@Table(name="acontecimento")
+@Etiqueta(descricao="Acontecimento", sexo="M")
+public class Acontecimento extends SuperEntidade implements Serializable {
+
+    private static final long serialVersionUID = 1L;
+    @Id
+    @GeneratedValue(strategy = GenerationType.AUTO)
+    @Cadastravel(label="Código", obrigatorio=false)
+    private Long id;
+    @Cadastravel(label="Título")
+    private String titulo;
+    @Cadastravel(label="Data Publicação")
+    @Temporal(javax.persistence.TemporalType.TIMESTAMP)
+    @Column(name="publicadoem")
+    private Date publicadoEm;
+    @Cadastravel(label="Data de Validade")
+    @Temporal(javax.persistence.TemporalType.DATE)
+    @Column(name="validoate")
+    private Date validoAte;
+    @Cadastravel(label="Categoria")
+    @ManyToOne
+    private Categoria categoria;
+    @Column(length = 10240)
+    @Cadastravel(label="Conteúdo")
+    private String conteudo;
+    @Enumerated(EnumType.STRING)
+    @Cadastravel(label="Tipo de Acontecimento")
+    @Column(name="tipoacontecimento")
+    private TipoAcontecimento tipoAcontecimento;    
+    @ManyToOne(cascade= CascadeType.ALL)
+    private Arquivo imagem;
+
+    public Acontecimento() {        
+    }
+
+    public Long getId() {
+        return id;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
+    }
+
+    public TipoAcontecimento getTipoAcontecimento() {
+        return tipoAcontecimento;
+    }
+
+    public void setTipoAcontecimento(TipoAcontecimento tipoAcontecimento) {
+        this.tipoAcontecimento = tipoAcontecimento;
+    }
+
+    public Categoria getCategoria() {
+        return categoria;
+    }
+
+    public void setCategoria(Categoria categoria) {
+        this.categoria = categoria;
+    }
+
+    public String getConteudo() {
+        return conteudo;
+    }
+
+    public void setConteudo(String conteudo) {
+        this.conteudo = conteudo;
+    }
+
+    public String getTitulo() {
+        return titulo;
+    }
+
+    public void setTitulo(String titulo) {        
+        this.titulo = titulo;
+    }
+
+    public Date getPublicadoEm() {
+        return publicadoEm;
+    }
+
+    public void setPublicadoEm(Date publicadoEm) {
+        this.publicadoEm = publicadoEm;
+    }
+
+    public Date getValidoAte() {
+        return validoAte;
+    }
+
+    public void setValidoAte(Date validoAte) {
+        this.validoAte = validoAte;
+    }
+
+    public Arquivo getImagem() {
+        return imagem;
+    }
+
+    public void setImagem(Arquivo imagem) {
+        this.imagem = imagem;
+    }
+
+    @Override
+    public String toString() {
+        try {
+            return new SimpleDateFormat("dd/MM/yyyy").format(this.publicadoEm) + " " + this.titulo;
+        } catch (Exception e) {
+            return this.titulo.trim().length() > 0 ? this.titulo : "ACONTECIMENTO DESCONHECIDO";
+        }
+    }
+    
+    
+    public String toStringAutoComplete() {
+        return toString();
+    }
+}

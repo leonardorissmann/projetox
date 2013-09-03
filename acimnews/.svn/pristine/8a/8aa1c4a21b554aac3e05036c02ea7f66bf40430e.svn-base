@@ -1,0 +1,31 @@
+/*
+ * To change this template, choose Tools | Templates
+ * and open the template in the editor.
+ */
+package br.com.acimnews.entidades;
+
+import br.com.acimnews.util.anotacoes.Etiqueta;
+
+/**
+ *
+ * @author Felipe Marinzeck
+ */
+@Etiqueta(descricao="Tipo de Acontecimento", sexo="M")
+public enum TipoAcontecimento {
+
+    NOTICIA("Notícia"),
+    EVENTO("Evento");
+    private String descricao;
+
+    private TipoAcontecimento(String descricao) {
+        this.descricao = descricao;
+    }
+
+    public String getDescricao() {
+        return descricao;
+    }
+
+    public void setDescricao(String descricao) {
+        this.descricao = descricao;
+    }
+}

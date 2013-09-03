@@ -1,0 +1,106 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:ui="http://java.sun.com/jsf/facelets">    
+    <ui:composition template="/resources/templates/template.xhtml">
+        <ui:define name="body">
+            <h:form id="Formulario">
+                <p:dataTable value="#{usuarioControlador.lista}"
+                             emptyMessage="Não foram localizados usuários"
+                             var="usuario">
+                    <f:facet name="header">
+                        <div align="left">
+                            <h:outputText value="Lista de Usuários"/>
+                        </div>
+                    </f:facet>                                        
+
+                    <p:column headerText="Operações" styleClass="colunaOperacoes">
+                        <p:button icon="ui-icon-lupa"
+                                  styleClass="icone-20 mrig03"
+                                  title="Clique para visualizar os detalhes deste usuário."
+                                  href="../ver/#{usuario.id}/"/>
+
+                        <p:button icon="ui-icon-lapis"
+                                  styleClass="icone-20 mrig03"
+                                  title="Clique para editar este usuário."
+                                  href="../editar/#{usuario.id}/"/>
+
+                        <p:commandButton icon="ui-icon-user-plus"
+                                         styleClass="icone-20"
+                                         onclick="if (!confirm('Tem certeza que deseja ativar este usuário?')){return false;}"
+                                         title="Clique para ativar este usuário."
+                                         rendered="#{usuario.ativo ne true}"
+                                         actionListener="#{usuarioControlador.alterarStatusUsuario(usuario)}"
+                                         update=":Formulario :rodape" />
+                        
+                        <p:commandButton icon="ui-icon-user-minus"
+                                         styleClass="icone-20"
+                                         onclick="if (!confirm('Tem certeza que deseja inativar este usuário?')){return false;}"
+                                         title="Clique para inativar este usuário."
+                                         rendered="#{usuario.ativo eq true}"
+                                         actionListener="#{usuarioControlador.alterarStatusUsuario(usuario)}"
+                                         update=":Formulario :rodape" />
+                    </p:column>
+
+                    <p:column headerText="Código"
+                              style="width: 110px; text-align: center;"                              
+                              filterMatchMode="contains"                              
+                              filterStyle="width : 100px;"
+                              filterBy="#{usuario.id}">
+                        <h:outputText value="#{usuario.id}" />
+                    </p:column>
+
+                    <p:column headerText="Nome"
+                              filterBy="#{usuario.nome}"
+                              filterStyle="width : 400px;"
+                              filterMatchMode="contains">
+                        <h:outputText value="#{usuario.nome}" />
+                    </p:column>
+                    
+                    <p:column headerText="Login"
+                              filterBy="#{usuario.login}"
+                              style="width: 200px"
+                              filterStyle="width : 200px;"
+                              filterMatchMode="contains">
+                        <h:outputText value="#{usuario.login}" />
+                    </p:column>      
+                    
+                    <p:column headerText="Privilégio"
+                              filterBy="#{usuario.privilegioUsuario}"
+                              filterOptions="#{usuarioControlador.filtroPrivilegioUsuario()}"
+                              filterStyleClass="filtroPrivilegioUsuario"
+                              style="text-align: center;"
+                              filterMatchMode="exact">
+                        <h:outputText value="#{usuario.privilegioUsuario.descricao}" />
+                    </p:column>       
+                    
+                    <p:column headerText="Ativo?"
+                              style="width: 150px; text-align: center;"
+                              filterStyle="width : 150px;"
+                              filterOptions="#{usuarioControlador.filtroStatusUsuario()}"
+                              filterBy="#{utilControlador.booleanAtivoInativo(usuario.ativo)}"
+                              filterMatchMode="exact">
+                        <h:outputText style="color: #CC0033;" styleClass="negrito" rendered="#{usuario.ativo eq false}" value="#{utilControlador.booleanAtivoInativo(usuario.ativo)}" />
+                        <h:outputText style="color: green;" styleClass="negrito" rendered="#{usuario.ativo eq true}" value="#{utilControlador.booleanAtivoInativo(usuario.ativo)}" />
+                    </p:column>                    
+                </p:dataTable>
+
+                <p:button value="Novo Usuário"
+                          href="/usuario/novo/"
+                          icon="ui-icon-plus-circle"
+                          styleClass="mtop10 mrig05"
+                          title="Clique para adicionar um novo usuário." >
+                </p:button>                
+                <p:button value="Home"
+                          href="/home"
+                          styleClass="mtop10"
+                          icon="ui-icon-house"
+                          title="Clique para voltar para a tela inicial." />                
+            </h:form>
+        </ui:define>
+    </ui:composition>
+</html>
+

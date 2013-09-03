@@ -1,0 +1,91 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:cc="http://java.sun.com/jsf/composite"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:f="http://java.sun.com/jsf/core">
+
+    <!-- INTERFACE -->
+    <cc:interface>
+    </cc:interface>
+
+    <!-- IMPLEMENTATION -->
+    <cc:implementation>
+        <h:form>                
+            <p:menubar styleClass="barraPrincipal">
+                <p:submenu label="Acontecimentos" icon="ui-icon-acontecimento">
+                    <p:menuitem value="Novo Acontecimento"
+                                url="/acontecimento/novo/"                                
+                                immediate="true"
+                                title="Clique para adicionar um novo acontecimento." />
+                    
+                    <p:menuitem value="Listar Acontecimentos"
+                                immediate="true"
+                                actionListener="#{sistemaControlador.navegarPara('/acontecimento/listar/')}"
+                                title="Clique para visualizar os acontecimentos cadastrados."/>
+                </p:submenu>
+
+                <p:submenu label="Categorias" icon="ui-icon-category">
+                    <p:menuitem value="Nova Categoria"
+                                immediate="true"
+                                actionListener="#{sistemaControlador.navegarPara('/categoria/novo/')}"
+                                title="Clique para adicionar uma nova categoria." />
+                    
+                    <p:menuitem value="Listar Categorias"
+                                immediate="true"
+                                actionListener="#{sistemaControlador.navegarPara('/categoria/listar/')}"
+                                title="Clique para visualizar as categorias cadastradas"/>
+                </p:submenu>
+
+                <p:submenu label="Notificação" icon="ui-icon-information">
+                    <p:menuitem value="Nova Notificação"
+                                immediate="true"
+                                actionListener="#{sistemaControlador.navegarPara('/notificacao/novo/')}"
+                                title="Clique para adicionar uma nova Notificação." />
+                    <p:menuitem value="Listar Notificações"
+                                actionListener="#{sistemaControlador.navegarPara('/notificacao/listar/')}"
+                                immediate="true"
+                                title="Clique para visualizar as notificação cadastradas"/>
+                </p:submenu>
+
+                <p:submenu label="Usuários" icon="ui-icon-users">
+                    <p:menuitem value="Novo Usuário"
+                                immediate="true"
+                                actionListener="#{sistemaControlador.navegarPara('/usuario/novo/')}"
+                                title="Clique para adicionar um novo usuário." />
+                    
+                    <p:menuitem value="Listar Usuários"
+                                immediate="true"
+                                actionListener="#{sistemaControlador.navegarPara('/usuario/listar/')}"
+                                title="Clique para visualizar os usuários cadastrados."/>
+                </p:submenu>
+
+                <p:menuitem value="Sugestões"
+                            icon="ui-icon-sugestao"
+                            immediate="true"
+                            actionListener="#{sistemaControlador.navegarPara('/sugestao/listar/')}"
+                            title="Clique para visualizar as sugestões enviadas." />
+
+                <p:menuitem  url="http://www.acim.com.br"
+                             styleClass="menuMinhaConta"
+                             immediate="true"
+                             target="_blank"
+                             icon="ui-icon-acim"
+                             title="Clique para acessar www.acim.com.br" />
+
+                <p:submenu styleClass="menuMinhaConta" label="Minha Conta" icon="ui-icon-user">
+                    <p:menuitem value="Logout"
+                                immediate="true"
+                                url="/j_spring_security_logout"
+                                title="Clique para fazer logout." />
+                    
+                    <p:menuitem value="Alterar Senha"
+                                url="/usuario/editar/#{usuarioControlador.recuperarUsuarioAtual().id}/"
+                                immediate="true"
+                                title="Clique aqui para alterar a sua senha."/>
+                </p:submenu>
+            </p:menubar>            
+        </h:form>
+    </cc:implementation>
+</html>

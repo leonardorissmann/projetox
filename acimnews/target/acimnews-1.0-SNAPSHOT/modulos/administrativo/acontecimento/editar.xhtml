@@ -1,0 +1,121 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:an="http://java.sun.com/jsf/composite/components"
+      xmlns:f="http://java.sun.com/jsf/core">    
+    <ui:composition template="/resources/templates/template.xhtml">
+        <ui:define name="body">
+            <h:form id="Formulario">  
+                <p:panel>
+                    <f:facet name="header">
+                        <h:outputText value="Nova(o) #{acontecimentoControlador.selecionado.tipoAcontecimento.descricao}" rendered="#{acontecimentoControlador.operacao eq 'NOVO'}" />
+                        <h:outputText value="Editar #{acontecimentoControlador.selecionado.tipoAcontecimento.descricao}"  rendered="#{acontecimentoControlador.operacao eq 'EDITAR'}" />
+                    </f:facet>
+                    <h:panelGrid columns="2" columnClasses="none, alinhamentoTopoCentralizado">
+                        <h:panelGrid columns="2">
+                            <h:outputLabel for="codigo" value="Código:"/>
+                            <p:inputText value="#{acontecimentoControlador.selecionado.id}"
+                                         disabled="true"
+                                         size="5"
+                                         id="codigo"
+                                         title="Este campo é preenchido automaticamente pelo sistema."/>
+
+                            <an:labelObrigatorio para="titulo" value="Titulo:"/>
+                            <p:inputText value="#{acontecimentoControlador.selecionado.titulo}"                                     
+                                         id="titulo"
+                                         size="60"
+                                         title="Digite o título deste acontecimento.">
+                                <p:ajax update=":rodape" />
+                            </p:inputText>
+
+                            <an:labelObrigatorio para="publicadoEm" value="Data Publicação:" />
+                            <p:calendar title="Digite a data da publicação."
+                                        value="#{acontecimentoControlador.selecionado.publicadoEm}"
+                                        locale="pt"
+                                        navigator="true"
+                                        id="publicadoEm"                                    
+                                        pattern="dd/MM/yyyy HH:mm:ss" />
+
+                            <an:labelObrigatorio para="dataValidade" value="Data Validade:" />
+                            <p:calendar title="Digite a data da validade."
+                                        value="#{acontecimentoControlador.selecionado.validoAte}"
+                                        locale="pt"
+                                        navigator="true"
+                                        id="dataValidade"                                    
+                                        pattern="dd/MM/yyyy" />
+
+                            <h:outputLabel for="tipoAcontecimento" value="Tipo:" />
+                            <p:selectOneMenu style="min-width: 129px!important;"
+                                             effect="fade"
+                                             effectDuration="1"
+                                             value="#{acontecimentoControlador.selecionado.tipoAcontecimento}"
+                                             id="tipoAcontecimento" >
+                                <f:selectItem itemLabel="Evento" itemValue="EVENTO" />
+                                <f:selectItem itemLabel="Notícia" itemValue="NOTICIA" />
+                                <f:ajax event="valueChange" render="@form" />
+                            </p:selectOneMenu>
+
+                            <an:labelObrigatorio id="labelCategoria" para="categoria" value="Categoria:" rendered="#{acontecimentoControlador.selecionado.tipoAcontecimento eq 'NOTICIA'}" />
+                            <h:panelGrid id="gridCategoria" columns="2" rendered="#{acontecimentoControlador.selecionado.tipoAcontecimento eq 'NOTICIA'}">
+                                <p:autoComplete  id="categoria" title="Digite a categoria que deseja consultar"                                             
+                                                 style="margin-left : -3px!important;"
+                                                 value="#{acontecimentoControlador.selecionado.categoria}"
+                                                 completeMethod="#{categoriaControlador.completarEstaEntidade}"
+                                                 var="categoria"
+                                                 queryDelay="0"
+                                                 effectDuration="0"
+                                                 itemLabel="#{categoria.toStringAutoComplete()}"
+                                                 itemValue="#{categoria}"
+                                                 size="60"
+                                                 onfocus="this.select()"
+                                                 converter="#{convertersControlador.categoriaConverter}">
+                                </p:autoComplete>
+
+                                <p:commandButton actionListener="#{acontecimentoControlador.novoRelacionamento('/categoria/novo/', 'acontecimento.categoria')}"
+                                                 tabindex="-1"                                             
+                                                 icon="ui-icon-plus-circle" 
+                                                 styleClass="icone-20" />
+                            </h:panelGrid>
+
+                            <h:outputLabel id="labelImagem"                                      
+                                           value="Imagem:"/>
+                            <p:fileUpload fileUploadListener="#{acontecimentoControlador.handleFileUpload}"  
+                                          mode="advanced"
+                                          label="Procurar..."
+                                          sizeLimit="10485760" 
+                                          uploadLabel="Confirmar"
+                                          showButtons="false"
+                                          auto="true"
+                                          update="imagem"
+                                          allowTypes="/(\.|\/)(gif|jpeg|png|jpg|bmp|pdf)$/"
+                                          invalidSizeMessage="O arquivo selecionado é muito grande! Por favor, selecione um arquivo com no máximo 10 Mb."
+                                          invalidFileMessage="O formato do arquivo selecionado não é permitido. Por favor, selecione um formato permitido (gif|jpeg|png|jpg|bmp|pdf)."
+                                          cancelLabel="Cancelar"/>  
+
+
+                            <an:labelObrigatorio para="conteudo" value="Conteúdo:" />
+                            <p:editor id="conteudo"
+                                      width="700"
+                                      height="400"
+                                      value="#{acontecimentoControlador.selecionado.conteudo}"/>
+                        </h:panelGrid>
+
+                        <p:graphicImage id="imagem" width="550" value="#{sistemaControlador.gerarImagem(acontecimentoControlador.selecionado.imagem.dados)}"/>                        
+                    </h:panelGrid>
+                </p:panel>
+
+                <p:commandButton value="Salvar"
+                                 icon="ui-icon-tick"
+                                 styleClass="mtop10 mrig05"
+                                 actionListener="#{acontecimentoControlador.salvar()}"
+                                 update=":Formulario :rodape" />
+
+                <p:button value="Listar Acontecimentos" icon="ui-icon-arrow-180" href='/acontecimento/listar/'/>
+            </h:form>    
+        </ui:define>
+    </ui:composition>
+</html>
+

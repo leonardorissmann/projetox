@@ -1,0 +1,46 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:an="http://java.sun.com/jsf/composite/components"
+      xmlns:f="http://java.sun.com/jsf/core">    
+    <ui:composition template="/resources/templates/template.xhtml">
+        <ui:define name="body">
+            <h:form id="Formulario">                
+                <p:panel>
+                    <f:facet name="header">
+                        <h:outputText value="Nova Categoria" rendered="#{categoriaControlador.operacao eq 'NOVO'}" />
+                        <h:outputText value="Editar Categoria #{categoriaControlador.selecionado}" rendered="#{categoriaControlador.operacao eq 'EDITAR'}" />
+                    </f:facet>
+                    <h:panelGrid columns="2">
+                        <h:outputLabel value="Código:"/>
+                        <p:inputText value="#{categoriaControlador.selecionado.id}"
+                                     disabled="true"
+                                     title="Este campo é preenchido automaticamente pelo sistema."/>
+
+                        <an:labelObrigatorio para="titulo" value="Titulo:"/>
+                        <p:inputText id="titulo"
+                                     value="#{categoriaControlador.selecionado.titulo}"                                     
+                                     title="Digite o título da categoria."/>
+                    </h:panelGrid>
+                </p:panel>
+
+                <p:commandButton value="Salvar"
+                                 icon="ui-icon-tick"
+                                 styleClass="mtop10 mrig05"
+                                 actionListener="#{categoriaControlador.salvar()}"
+                                 update=":Formulario :rodape" />
+                
+                <p:commandButton value="Cancelar"
+                                 icon="ui-icon-cross"
+                                 styleClass="mtop10 mrig05"                                 
+                                 actionListener="#{categoriaControlador.navegarEmbora()}"/>
+
+                <p:button value="Listar Categorias" icon="ui-icon-arrow-180" href='/categoria/listar/'/>
+            </h:form>    
+        </ui:define>
+    </ui:composition>
+</html>
+

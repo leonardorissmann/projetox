@@ -1,0 +1,183 @@
+/*
+ * To change this template, choose Tools | Templates
+ * and open the template in the editor.
+ */
+package br.com.acimnews.controle;
+
+import br.com.acimnews.entidades.Acontecimento;
+import br.com.acimnews.entidades.Arquivo;
+import br.com.acimnews.entidades.Categoria;
+import br.com.acimnews.entidades.TipoAcontecimento;
+import br.com.acimnews.exceptions.CampoObrigatorioException;
+import br.com.acimnews.negocios.AcontecimentoFacade;
+import br.com.acimnews.supers.SuperControlador;
+import br.com.acimnews.supers.SuperFacade;
+import br.com.acimnews.util.Util;
+import br.com.acimnews.util.anotacoes.Operacoes;
+import com.ocpsoft.pretty.faces.annotation.URLAction;
+import com.ocpsoft.pretty.faces.annotation.URLAction.PhaseId;
+import com.ocpsoft.pretty.faces.annotation.URLMapping;
+import com.ocpsoft.pretty.faces.annotation.URLMappings;
+import java.io.ByteArrayInputStream;
+import java.io.InputStream;
+import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
+import javax.faces.bean.ManagedBean;
+import javax.faces.bean.SessionScoped;
+import javax.faces.model.SelectItem;
+import org.primefaces.event.FileUploadEvent;
+import org.primefaces.model.DefaultStreamedContent;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Scope;
+import org.springframework.stereotype.Controller;
+
+/**
+ *
+ * @author Felipe Marinzeck
+ */
+@ManagedBean(name="acontecimentoControlador")
+@SessionScoped
+@URLMappings(mappings = {
+    @URLMapping(id = "novo-acontecimento", pattern = "/acontecimento/novo/", viewId = "/faces/modulos/administrativo/acontecimento/editar.xhtml"),
+    @URLMapping(id = "editar-acontecimento", pattern = "/acontecimento/editar/#{acontecimentoControlador.id}/", viewId = "/faces/modulos/administrativo/acontecimento/editar.xhtml"),
+    @URLMapping(id = "listar-acontecimento", pattern = "/acontecimento/listar/", viewId = "/faces/modulos/administrativo/acontecimento/listar.xhtml"),
+    @URLMapping(id = "ver-acontecimento", pattern = "/acontecimento/ver/#{acontecimentoControlador.id}/", viewId = "/faces/modulos/administrativo/acontecimento/visualizar.xhtml")
+})
+public class AcontecimentoControlador extends SuperControlador<Acontecimento> implements Serializable {
+
+    private Long id;
+    @Autowired
+    private AcontecimentoFacade acontecimentoFacade;
+
+    /**
+     * Creates a new instance of UsuarioControlador
+     */
+    public AcontecimentoControlador() {
+        super(Acontecimento.class);
+    }
+
+    @Override
+    public SuperFacade getEsteFacade() {
+        return acontecimentoFacade;
+    }
+
+    @URLAction(mappingId = "listar-acontecimento", phaseId = PhaseId.RENDER_RESPONSE, onPostback = false)
+    public void listar() {
+        setOperacao(Operacoes.LISTAR);
+    }
+
+    @URLAction(mappingId = "novo-acontecimento", phaseId = PhaseId.RENDER_RESPONSE, onPostback = false)
+    public void novo() {
+        setOperacao(Operacoes.NOVO);
+        this.selecionado = new Acontecimento();
+        this.selecionado.setPublicadoEm(new Date());
+        this.selecionado.setTipoAcontecimento(TipoAcontecimento.NOTICIA);
+        recuperarDependenciasSecao();
+    }
+
+    @URLAction(mappingId = "editar-acontecimento", phaseId = PhaseId.RENDER_RESPONSE, onPostback = false)
+    public void editar() {
+        setOperacao(Operacoes.EDITAR);
+        this.selecionado = (Acontecimento) acontecimentoFacade.recuperar(Acontecimento.class, this.id);
+        recuperarDependenciasSecao();
+    }
+
+    @URLAction(mappingId = "ver-acontecimento", phaseId = PhaseId.RENDER_RESPONSE, onPostback = false)
+    public void visualizar() {
+        setOperacao(Operacoes.VER);
+        this.selecionado = (Acontecimento) acontecimentoFacade.recuperar(Acontecimento.class, this.id);
+    }
+
+    public void salvar() {
+        try {
+            if (this.getOperacao().equals(Operacoes.NOVO)) {
+                acontecimentoFacade.inserir(this.selecionado);
+            }
+
+            if (this.getOperacao().equals(Operacoes.EDITAR)) {
+                acontecimentoFacade.alterar(this.selecionado);
+            }
+
+            addInfo("Operação realizada com sucesso!", "O(a) acontecimento " + this.selecionado.toString() + " foi <b>" + this.operacao.getDescricao() + "</b> com sucesso!");
+        } catch (RuntimeException ex) {
+            if (ex instanceof CampoObrigatorioException) {
+                addError(ex.getMessage(), ex.getMessage());
+            } else {
+                addErrorPadrao(ex);
+            }
+            return;
+        } catch (Exception ex) {
+            addErrorPadrao(ex);
+            return;
+        }
+
+        navegarEmbora();
+    }
+
+    public void navegarEmbora() {
+        String caminho = getCaminhoOrigem();
+        if (caminho == null) {
+            caminho = "/acontecimento/listar/";
+        }
+        Util.redirecionamentoInterno(caminho);
+    }
+
+    /*
+     * GETTERS E SETTERS
+     */
+    public AcontecimentoFacade getAcontecimentoFacade() {
+        return acontecimentoFacade;
+    }
+
+    public void setAcontecimentoFacade(AcontecimentoFacade acontecimentoFacade) {
+        this.acontecimentoFacade = acontecimentoFacade;
+    }
+
+    public Long getId() {
+        return id;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
+    }
+
+    public List<Acontecimento> getLista() {
+        return acontecimentoFacade.listar();
+    }
+
+    public List<SelectItem> filtroTipoAcontecimento() {
+        List<SelectItem> toReturn = new ArrayList<SelectItem>();
+        for (TipoAcontecimento tipo : TipoAcontecimento.values()) {
+            toReturn.add(new SelectItem(tipo.getDescricao(), tipo.getDescricao()));
+        }
+        return toReturn;
+    }
+
+    public void novoRelacionamento(String destino, String atributo) {
+        putToConversation(destino, atributo);
+        super.guardarSelecionado();
+        super.tratarCaminhos(destino);
+    }
+
+    public void handleFileUpload(FileUploadEvent event) {
+        Arquivo arquivo = new Arquivo();
+        arquivo.setNome(event.getFile().getFileName());
+        arquivo.setDados(event.getFile().getContents());
+        arquivo.setMimeType(event.getFile().getContentType());
+        arquivo.setTamanho(event.getFile().getSize());
+
+        selecionado.setImagem(arquivo);
+    }
+
+    @Override
+    public void recuperarDependenciasSecao() {
+        super.recuperarDependenciasSecao();
+
+        if (getFromConversation("acontecimento.categoria") != null) {
+            this.selecionado.setCategoria((Categoria) getFromConversation("acontecimento.categoria"));
+            removeFromConversation("acontecimento.categoria");
+        }
+    }
+}

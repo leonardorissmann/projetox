@@ -1,0 +1,40 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:f="http://java.sun.com/jsf/core">
+
+    <f:view contentType="text/html; charset=UTF-8">        
+        <h:head>
+            <title>AcimNews - Área Restrita</title>
+            <h:outputStylesheet library="css" name="layout.css"  />
+        </h:head>        
+        <h:body class="bg-image-login">
+            <p:spacer height="20" />
+            <div style="width: 100%" align="center">
+                <div class="logo-acim-medio"/>
+            </div>
+            <div align="center">
+                <div style="height: 50px;" />
+                <div class="ui-state-highlight sombra" style="width: 300px; height: 220px; border: 1px solid #fad42e; display: table-cell; vertical-align: middle; ">
+                    <h:outputText value="Usuário ou senha inválidos!" style="font-size: 20px; font-weight: bold; "/>
+                    <br />
+                    <br />
+                    <br />
+                    <h:outputText value="Tente novamente!" style="font-size: 15px; font-weight: bold;"/>
+                    <br />
+                    <br />
+                    <br />
+                    <br />
+                    <br />
+                    <a href="home" class="negrito" style="font-size: 20px; color: #CC0033">Voltar</a>
+                </div>
+
+                <div style="position: fixed; bottom: 10px; right: 10px;">
+                    <div class="logo-mrc"/>
+                </div>
+            </div>            
+        </h:body>
+    </f:view>
+</html> 

@@ -1,0 +1,69 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:ui="http://java.sun.com/jsf/facelets">    
+    <ui:composition template="/resources/templates/template.xhtml">
+        <ui:define name="body">
+            <h:form id="Formulario">
+                <p:dataTable value="#{categoriaControlador.lista}"
+                             emptyMessage="Não foram localizadas categorias"
+                             var="categoria">
+                    <f:facet name="header">
+                        <div align="left">
+                            <h:outputText value="Lista de Categorias"/>
+                        </div>
+                    </f:facet>                                        
+
+                    <p:column headerText="Operações" styleClass="colunaOperacoes">
+                        <p:button icon="ui-icon-lupa"
+                                  styleClass="icone-20 mrig03"
+                                  title="Clique para visualizar os detalhes desta categoria."
+                                  href="../ver/#{categoria.id}/"/>
+
+                        <p:button icon="ui-icon-lapis"
+                                  styleClass="icone-20 mrig03"
+                                  title="Clique para editar esta categoria."
+                                  href="../editar/#{categoria.id}/"/>
+
+                        <p:commandButton icon="ui-icon-minus-circle"
+                                         styleClass="icone-20"
+                                         onclick="if (!confirm('Tem certeza que deseja excluir esta categoria?')){return false;}"
+                                         title="Clique para excluir esta categoria."
+                                         actionListener="#{categoriaControlador.excluir(categoria)}"
+                                         update=":Formulario :rodape" />                    
+                    </p:column>
+
+                    <p:column headerText="Código"
+                              style="width: 30px; text-align: center;"                              
+                              filterMatchMode="contains"                              
+                              filterBy="#{categoria.id}">
+                        <h:outputText value="#{categoria.id}" />
+                    </p:column>
+
+                    <p:column headerText="Título"
+                              filterBy="#{categoria.titulo}"
+                              filterStyle="width : 400px;"
+                              filterMatchMode="contains">
+                        <h:outputText value="#{categoria.titulo}" />
+                    </p:column>
+                </p:dataTable>
+
+                <p:button value="Nova Categoria"
+                          href="/categoria/novo/"
+                          icon="ui-icon-plus-circle"
+                          styleClass="mtop10 mrig05"
+                          title="Clique para adicionar uma nova categoria." >
+                </p:button>                
+                <p:button value="Home"
+                          href="/home"
+                          styleClass="mtop10"
+                          icon="ui-icon-house"
+                          title="Clique para voltar para a tela inicial." />                
+            </h:form>
+        </ui:define>
+    </ui:composition>
+</html>
+

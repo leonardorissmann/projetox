@@ -1,0 +1,108 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:ui="http://java.sun.com/jsf/facelets">    
+    <ui:composition template="/resources/templates/template.xhtml">
+        <ui:define name="body">
+            <div class="colunaOperacoesNotificacao" />
+            <h:form id="Formulario">
+                <p:dataTable value="#{notificacaoControlador.lista}"
+                             emptyMessage="Não foram localizadas notificações"
+                             var="notificacao">
+                    <f:facet name="header">
+                        <div align="left">
+                            <h:outputText value="Lista de Notificações"/>
+                        </div>
+                    </f:facet>                                        
+
+                    <p:column headerText="Operações" styleClass="colunaOperacoesNotificacao">
+                        <p:button icon="ui-icon-lupa"
+                                  styleClass="icone-20 mrig03"
+                                  title="Clique para visualizar os detalhes desta notificação."
+                                  href="../ver/#{notificacao.id}/"/>
+
+                        <p:button icon="ui-icon-lapis"
+                                  styleClass="icone-20 mrig03"
+                                  title="Clique para editar esta notificação."
+                                  href="../editar/#{notificacao.id}/"/>
+
+                        <p:commandButton icon="ui-icon-minus-circle"
+                                         styleClass="icone-20 mrig03"
+                                         onclick="if (!confirm('Tem certeza que deseja excluir esta notificação?')){return false;}"
+                                         title="Clique para excluir esta notificação."
+                                         actionListener="#{notificacaoControlador.excluir(notificacao)}"
+                                         update=":Formulario :rodape" />                    
+
+                        <p:commandButton icon="ui-icon-tick"
+                                         styleClass="icone-20 mrig03"
+                                         onclick="if (!confirm('Tem certeza que marcar está notificação como ATIVA ?')){return false;}"                                         
+                                         disabled="#{notificacao.ativa}"
+                                         title="Clique para marcar está notificação como ativa ."
+                                         actionListener="#{notificacaoControlador.marcarNotificacaoComAtiva(notificacao)}"
+                                         update=":Formulario :rodape" />   
+
+                    </p:column>
+                    <p:column headerText="Código"
+                              filterStyle="width : 30px;"
+                              style="width: 30px; text-align: center;"
+                              filterMatchMode="contains"                              
+                              filterBy="#{notificacao.id}">
+                        <h:outputText value="#{notificacao.id}" />
+                    </p:column>
+
+                    <p:column headerText="Título"
+                              style="width: 150px;"      
+                              filterMatchMode="contains"
+                              filterBy="#{notificacao.titulo}"
+                              sortBy="#{notificacao.titulo}"
+                              >
+                        <h:outputText value="#{notificacao.titulo}" />
+                    </p:column>
+
+                    <p:column headerText="Mensagem barra de Status"
+                              style="width: 200px;"     
+                              filterMatchMode="contains"
+                              filterBy="#{notificacao.mensagemBarraStatus}"
+                              sortBy="#{notificacao.mensagemBarraStatus}"
+                              >
+                        <h:outputText value="#{notificacao.mensagemBarraStatus}" />
+                    </p:column>
+
+                    <p:column headerText="Mensagem"                              
+                              filterMatchMode="contains"
+                              filterBy="#{notificacao.mensagem}"
+                              sortBy="#{notificacao.mensagem}"
+                              >
+                        <h:outputText value="#{notificacao.mensagem}" />
+                    </p:column>
+
+                    <p:column headerText="Ativo?"
+                              style="width: 150px; text-align: center;"
+                              filterStyle="width : 150px;"
+                              filterOptions="#{notificacaoControlador.filtroStatus()}"
+                              filterBy="#{utilControlador.booleanAtivoInativo(notificacao.ativa)}"
+                              filterMatchMode="exact">
+                        <h:outputText style="color: red;" rendered="#{notificacao.ativa eq false}" value="#{utilControlador.booleanAtivoInativo(notificacao.ativa)}" />
+                        <h:outputText style="color: green;" rendered="#{notificacao.ativa eq true}" value="#{utilControlador.booleanAtivoInativo(notificacao.ativa)}" />
+                    </p:column>
+
+                </p:dataTable>
+                <p:button value="Nova Notificação"
+                          href="/notificacao/novo/"
+                          icon="ui-icon-plus-circle"
+                          styleClass="mtop10 mrig05"
+                          title="Clique para adicionar uma nova notificação." >
+                </p:button>
+                <p:button value="Home"
+                          href="/home"
+                          styleClass="mtop10"
+                          icon="ui-icon-house"
+                          title="Clique para voltar para a tela inicial." />
+            </h:form>
+        </ui:define>
+    </ui:composition>
+</html>
+

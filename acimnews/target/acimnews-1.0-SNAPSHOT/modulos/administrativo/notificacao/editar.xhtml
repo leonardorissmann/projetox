@@ -1,0 +1,65 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:an="http://java.sun.com/jsf/composite/components"
+      xmlns:f="http://java.sun.com/jsf/core">    
+    <ui:composition template="/resources/templates/template.xhtml">
+        <ui:define name="body">            
+            <h:form id="Formulario">                
+                <p:panel>
+                    <f:facet name="header">
+                        <h:outputText value="Nova(o) Notificação" rendered="#{notificacaoControlador.operacao eq 'NOVO'}" />
+                        <h:outputText value="Editar Notificação"  rendered="#{notificacaoControlador.operacao eq 'EDITAR'}" />
+                    </f:facet>
+                    <h:panelGrid columns="2">
+                        <h:outputLabel for="codigo" value="Código:"/>
+                        <p:inputText value="#{notificacaoControlador.selecionado.id}"
+                                     disabled="true"
+                                     size="5"
+                                     id="codigo"
+                                     title="Este campo é preenchido automaticamente pelo sistema."/>
+
+                        <an:labelObrigatorio para="barraStatus" value="Mensagem Barra de Status:"/>
+                        <p:inputText value="#{notificacaoControlador.selecionado.mensagemBarraStatus}"                                     
+                                     id="barraStatus"
+                                     size="60"
+                                     title="Digite a mensagem da barra de status.">
+                            <p:ajax update=":rodape" />
+                        </p:inputText>
+
+                        <an:labelObrigatorio para="titulo" value="Título :"/>
+                        <p:inputText value="#{notificacaoControlador.selecionado.titulo}"                                     
+                                     id="titulo"
+                                     size="60"
+                                     title="Digite o título da notificação.">
+                            <p:ajax update=":rodape" />
+                        </p:inputText>
+
+                        <an:labelObrigatorio para="mensagem" value="Mensagem :"/>
+                        <p:inputText value="#{notificacaoControlador.selecionado.mensagem}"                                     
+                                     id="mensagem"
+                                     size="60"
+                                     title="Digite o mensagem da notificação.">
+                            <p:ajax update=":rodape" />
+                        </p:inputText>
+                        
+                        <an:labelObrigatorio para="ativa" value="Ativa:"/>
+                        <p:selectBooleanCheckbox id="ativa" value="#{notificacaoControlador.selecionado.ativa}"/>
+                    </h:panelGrid>
+                </p:panel>
+
+                <p:commandButton value="Salvar"
+                                 icon="ui-icon-tick"
+                                 styleClass="mtop10 mrig05"
+                                 actionListener="#{notificacaoControlador.salvar()}"
+                                 update=":Formulario :rodape" />
+
+                <p:button value="Listar Notificações" icon="ui-icon-arrow-180" href='/notificacao/listar/'/>
+            </h:form>    
+        </ui:define>
+    </ui:composition>
+</html>
+

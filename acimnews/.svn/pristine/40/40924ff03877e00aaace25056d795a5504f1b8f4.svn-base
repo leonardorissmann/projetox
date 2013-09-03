@@ -1,0 +1,35 @@
+/*
+ * To change this template, choose Tools | Templates
+ * and open the template in the editor.
+ */
+package br.com.acimnews.negocios;
+
+import br.com.acimnews.entidades.Acontecimento;
+import br.com.acimnews.entidades.Arquivo;
+import br.com.acimnews.supers.SuperFacade;
+import java.util.List;
+import javax.persistence.EntityManager;
+import javax.persistence.PersistenceContext;
+import javax.persistence.Query;
+import org.springframework.stereotype.Repository;
+import org.springframework.transaction.annotation.Transactional;
+
+/**
+ *
+ * @author Felipe Marinzeck
+ */
+@Repository
+public class ArquivoFacade extends SuperFacade<Arquivo> {
+
+    @PersistenceContext(unitName = "acimnewsPU")
+    private EntityManager em;
+
+    public ArquivoFacade() {
+        super(Arquivo.class);
+    }
+
+    @Override
+    protected EntityManager getEntityManager() {
+        return em;
+    }
+}

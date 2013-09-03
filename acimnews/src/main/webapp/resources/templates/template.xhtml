@@ -1,0 +1,154 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:an="http://java.sun.com/jsf/composite/components"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:f="http://java.sun.com/jsf/core">
+
+    <f:view contentType="text/html">        
+        <h:head>
+            <title>ACIM News Android</title>
+            <h:outputStylesheet library="css" name="layout.css"  />
+            <h:outputScript library="javascript" name="locales-calendar-primefaces.js" />
+        </h:head>
+
+        <script type="text/javascript">
+            function atribuirStyles(elemento, styles){
+                for(var s in styles) {
+                    elemento.style[s] = styles[s];
+                }
+            }
+            
+            function redimensionarDialog(id){                
+                var div = document.getElementById(id);
+                var style = div.style;
+                var hTotal = window.innerHeight;
+                var wTotal = window.innerWidth;                
+                style.top = '15px';
+                style.left = '15px';
+                style.right = '15px';
+                style.bottom = '15px';
+                style.width  = ''.concat(wTotal -= 30, 'px');
+                style.height = ''.concat(hTotal -= 50, 'px');
+                
+                atribuirStyles(div, style);
+            }
+            
+            function carregar(){
+                // Cabeçalho
+                var status = document.getElementById("mostra-cabecalho").value;
+                if (status == 'false'){                    
+                    $("#cabecalho").hide();
+                }
+                
+                // Rodapé
+                var status = document.getElementById("mostra-rodape").value;
+                if (status == 'false'){                    
+                    $("#div-rodape").hide();
+                }
+            }
+            
+            function toggleCabecalho(){                
+                if (document.getElementById("mostra-cabecalho").value == 'false'){
+                    document.getElementById("mostra-cabecalho").value = 'true';
+                } else {
+                    document.getElementById("mostra-cabecalho").value = 'false';
+                }
+                $("#cabecalho").slideToggle();
+            }
+            
+            function toggleRodape(){
+                if (document.getElementById("mostra-rodape").value == 'false'){
+                    document.getElementById("mostra-rodape").value = 'true';
+                } else {
+                    document.getElementById("mostra-rodape").value = 'false';
+                }
+                $("#div-rodape").slideToggle();
+            }
+        </script>
+
+        <h:body onload="carregar()">
+            <div class="logo-acim-grande" />
+            <div>                
+                <div id="cabecalho" >
+                    <an:cabecalho/>
+                </div>
+
+                <div id="conteudo">
+                    <ui:insert name="body"/>
+                    <div class="logo-mrc-pequeno" />
+                </div>
+
+                <div id="div-rodape">
+                    <div class="conteudo-rodape ui-widget-content" >
+                        <h:form id="rodape">
+                            <an:rodape />
+                        </h:form>
+                    </div>
+                </div>
+            </div>
+
+            <h:form prependId="false">
+                <h:inputHidden id="mostra-cabecalho" value="#{sistemaControlador.mostraCabecalho}" />
+                <h:inputHidden id="mostra-rodape" value="#{sistemaControlador.mostraRodape}" />
+
+                <p:remoteCommand name="sincronizar" update="mostra-cabecalho mostra-rodape" process="mostra-cabecalho mostra-rodape" immediate="true"/>
+
+                <p:hotkey bind="ctrl+m" oncomplete="mensagensDialog.show()" update=":formulario-tabela-mensagens" immediate="true"/>
+                <p:hotkey bind="ctrl+l" actionListener="#{sistemaControlador.limparTodasMensagens()}" update=":formulario-tabela-mensagens :rodape" immediate="true"/>                
+                <p:hotkey bind="ctrl+up" handler="toggleCabecalho();" immediate="true"/>
+                <p:hotkey bind="ctrl+down" handler="toggleRodape();" immediate="true"/>
+                <p:hotkey bind="ctrl+shift+up" handler="toggleCabecalho(); sincronizar();" immediate="true"/>
+                <p:hotkey bind="ctrl+shift+down" handler="toggleRodape(); sincronizar();" immediate="true"/>
+
+                <p:hotkey bind="f1" handler="window.open('/acimnews/home','_newtab');" immediate="true"/>
+                <p:hotkey bind="f2" handler="window.open(document.URL,'_newtab');" immediate="true"/>
+                <p:hotkey bind="f4" handler="if (!confirm('Tem certeza que deseja ir para a tela inicial?')){return;}; window.location = '/acimnews/home'" immediate="true"/>                
+            </h:form>
+
+            <p:dialog widgetVar="mensagensDialog"
+                      modal="true"
+                      header="Log de Mensagens desta Sessão."                      
+                      dynamic="true"
+                      onShow="redimensionarDialog(this.id);"
+                      position="center"
+                      closable="true"
+                      resizable="false"
+                      draggable="false">
+                <h:form id="formulario-tabela-mensagens">
+                    <div class="div-info-tabela">
+                        <p:hotkey bind="esc" update="@this" actionListener="#{sistemaControlador.tornarMensagensLidas}" immediate="true"/>
+                        <p:dataTable value="#{sistemaControlador.mensagens}"                                     
+                                     rowStyleClass="#{fMess.foiVisualizada.equals(true) ? 'linha-selecionada' : ''}"                                     
+                                     emptyMessage="Não existem mensagens para esta sessão."                                     
+                                     var="fMess">
+                            <p:column headerText="Horário" style="text-align: center; width: 15%;">
+                                <h:outputText value="#{fMess.ocorridoEm}">
+                                    <f:convertDateTime pattern="dd/MM/yyyy HH:mm:ss" timeZone="America/Sao_Paulo"/>
+                                </h:outputText>
+                            </p:column>
+                            <p:column headerText="Mensagem" style="text-align: left;">
+                                <div class="ui-message-#{sistemaControlador.recuperarClasseGravidadeMensagem(fMess.mensagem)}-icon" style="margin-right: 10px;"/>
+                                <h:outputText value="#{fMess.mensagem.summary}"
+                                              escape="false"
+                                              rendered="#{fMess.mensagem.detail ne fMess.mensagem.summary}"                                              
+                                              class="negrito"/>
+                                <h:outputText value=" - "
+                                              escape="false"
+                                              rendered="#{fMess.mensagem.detail ne fMess.mensagem.summary}" />
+                                <h:outputText value="#{fMess.mensagem.detail}"
+                                              escape="false"/>
+                            </p:column>
+                            <p:column headerText="Visualizada" style="text-align: center; width: 05%;">
+                                <h:outputText value="Sim" rendered="#{fMess.foiVisualizada}"/>
+                                <h:outputText value="Não" rendered="#{!fMess.foiVisualizada}"/>
+                            </p:column>
+                        </p:dataTable>
+                    </div>
+                </h:form>
+            </p:dialog>
+        </h:body>
+    </f:view>
+</html>

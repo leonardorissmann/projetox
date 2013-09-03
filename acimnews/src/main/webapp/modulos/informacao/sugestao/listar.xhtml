@@ -1,0 +1,89 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:ui="http://java.sun.com/jsf/facelets">    
+    <ui:composition template="/resources/templates/template.xhtml">
+        <ui:define name="body">
+            <h:form id="Formulario">
+                <p:dataTable value="#{sugestaoControlador.lista}"
+                             rowStyleClass="#{sugestao.foiLida eq false ? 'linha-selecionada' : ''}"
+                             emptyMessage="Não foram localizadas sugestões"
+                             var="sugestao">
+                    <f:facet name="header">
+                        <div align="left">
+                            <h:outputText value="Lista de Sugestões"/>
+                        </div>
+                    </f:facet>                                        
+
+                    <p:column headerText="Operação" styleClass="colunaOperacoes">
+                        <p:commandButton icon="ui-icon-olho-seta"
+                                         styleClass="icone-20"
+                                         onclick="if (!confirm('Tem certeza que deseja marcar esta sugestão como visualizada?')){return false;}"
+                                         title="Clique para marcar esta sugestão como lida."
+                                         actionListener="#{sugestaoControlador.marcarSugestaoComoLida(sugestao)}"
+                                         update=":Formulario :rodape" />                    
+                    </p:column>
+
+                    <p:column headerText="Código"
+                              style="width: 30px; text-align: center;"                              
+                              filterMatchMode="contains"                              
+                              filterBy="#{sugestao.id}">
+                        <h:outputText value="#{sugestao.id}" />
+                    </p:column>
+
+                    <p:column headerText="Data de Envio"
+                              style="text-align: center;"
+                              filterBy="#{utilControlador.converterDateEmString(sugestao.enviadaEm)}"
+                              filterMatchMode="contains">
+                        <h:outputText value="#{utilControlador.converterDateEmString(sugestao.enviadaEm)}" />
+                    </p:column>
+
+                    <p:column headerText="Nome Enviador"
+                              filterBy="#{sugestao.nome}"
+                              filterMatchMode="contains">
+                        <h:outputText value="#{sugestao.nome}" />
+                    </p:column>
+
+                    <p:column headerText="E-mail Enviador"
+                              filterBy="#{sugestao.email}"                              
+                              filterMatchMode="contains">
+                        <h:outputText value="#{sugestao.email}" />
+                    </p:column>
+
+                    <p:column headerText="Telefone Enviador"
+                              filterBy="#{sugestao.telefone}"                              
+                              filterMatchMode="contains">
+                        <h:outputText value="#{sugestao.telefone}" />
+                    </p:column>
+
+                    <p:column headerText="Detalhes"
+                              style="min-width: 140px!important; text-align: center;">
+                        <h:outputText id="detalhes" value="[Pare o mouse aqui]" style="cursor: pointer;"/>
+
+                        <p:overlayPanel id="imgPanel"
+                                        at="right"
+                                        for="detalhes"
+                                        appendToBody="true"                                        
+                                        showEffect="fade" 
+                                        hideEffect="fade"
+                                        onShow="#{sugestao.setFoiLida(true)}"
+                                        showEvent="mouseover"
+                                        hideEvent="mouseout"  >  
+                            <h:outputText value="#{sugestao.descricao}" escape="false" />
+                        </p:overlayPanel> 
+                    </p:column>
+                </p:dataTable>
+                
+                <p:button value="Home"
+                          href="/home"
+                          styleClass="mtop10"
+                          icon="ui-icon-house"
+                          title="Clique para voltar para a tela inicial." />                
+            </h:form>
+        </ui:define>
+    </ui:composition>
+</html>
+

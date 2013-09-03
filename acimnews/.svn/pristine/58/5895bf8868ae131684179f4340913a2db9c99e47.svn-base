@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Context antiJARLocking="true" path="/acimnews">
+  <Resource auth="Container" driverClassName="com.mysql.jdbc.Driver" maxActive="20" maxIdle="10" maxWait="-1" name="acimnewsJNDI" password="melancia123" type="javax.sql.DataSource" url="jdbc:mysql://localhost:3306/acimnews" username="acimnews"/>
+  <Resource auth="Container" driverClassName="com.mysql.jdbc.Driver" maxActive="20" maxIdle="10" maxWait="-1" name="conexao" password="acm14789" type="javax.sql.DataSource" url="jdbc:mysql://dbmy0037.whservidor.com:3306/acim1_19" username="acim1_19"/>
+  <Resource auth="Container" driverClassName="com.mysql.jdbc.Driver" maxActive="20" maxIdle="10" maxWait="-1" name="localhost" password="" type="javax.sql.DataSource" url="jdbc:mysql://localhost:3306/sistema" username="root"/>
+</Context>
